@@ -1,4 +1,10 @@
 (function () {
+    const { fromEvent } = window.rxjs;
+    const {
+        map, pairwise, filter, throttleTime,
+    } = window.rxjs.operators;
+
+    const navContainer = document.querySelector('[data-navigation]');
     const resultNav = document.querySelector('[data-results-nav]');
     const favoritesNav = document.querySelector('[data-favorites-nav]');
     const favoritesBtn = document.querySelector('[data-clickable-favorites]');
@@ -7,6 +13,39 @@
     const saveConfirmed = document.querySelector('[data-save-confirmed]');
     const loader = document.querySelector('[data-loader]');
 
+    // creating RxJS stream
+    const stream$ = fromEvent(window, 'scroll');
+    stream$.pipe(
+        throttleTime(100),
+        map(() => {
+            if (document.documentElement.scrollTop < 100) {
+                return ({
+                    position: document.documentElement.scrollTop,
+                    direction: true,
+                });
+            } return ({
+                position: document.documentElement.scrollTop,
+                direction: false,
+            });
+        }),
+        pairwise(),
+        filter((data) => (data[1].position - data[0].position > 50
+            || data[1].position - data[0].position < -50
+            || data[1].position < 100)),
+        map((data) => {
+            if (data[1].position - data[0].position > 50) {
+                return false;
+            } return true;
+        }),
+    ).subscribe((direction) => {
+        if (direction) {
+            navContainer.classList.add('slideOutDown');
+            navContainer.classList.remove('slideOutUp');
+        } else {
+            navContainer.classList.remove('slideOutDown');
+            navContainer.classList.add('slideOutUp');
+        }
+    });
 
     // NASA API
     const count = 10;
@@ -19,8 +58,8 @@
     function showContent(page) {
         window.scrollTo({
             top: 0,
-            behavior: 'instant'
-        })
+            behavior: 'instant',
+        });
         if (page === 'results') {
             resultNav.classList.remove('hidden');
             favoritesNav.classList.add('hidden');
@@ -45,18 +84,19 @@
                 // Set favorites in localStorage
                 localStorage.setItem('nasaFavorites', JSON.stringify(favorites));
             }
-        })
+        });
     }
 
     // Remove item from Favorites
-    function removeFavorite (e) {
-        const url = e.target.parentNode.parentNode.firstChild.firstChild.getAttribute('src');
+    function removeFavorite(e) {
+        const deletedCard = e.target.parentNode.parentNode;
+        const url = deletedCard.firstChild.firstChild.getAttribute('src');
         if (favorites[url]) {
             delete favorites[url];
             // Set favorites in localStorage
             localStorage.setItem('nasaFavorites', JSON.stringify(favorites));
-            updateDOM('favorites');
         }
+        deletedCard.classList.add('hidden');
     }
 
     function createDOMNodes(page) {
@@ -108,7 +148,7 @@
             copyright.textContent = ` ${copyrightResult}`;
             // Append
             footer.append(date, copyright);
-            cardBody.append(cardTitle, saveText, cardText, footer)
+            cardBody.append(cardTitle, saveText, cardText, footer);
             link.appendChild(image);
             card.append(link, cardBody);
             imagesContainer.appendChild(card);
@@ -134,7 +174,7 @@
             resultsArray = await response.json();
             updateDOM('results');
         } catch (error) {
-            
+            alert(error);
         }
     }
 

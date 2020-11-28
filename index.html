@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="https://s2.googleusercontent.com/s2/favicons?domain=www.nasa.gov">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.3/rxjs.umd.min.js" integrity="sha512-JnZPWAckMDks0CCIeGznqEo7ifmYK7VowHq/NVFlSXGkwxv4OBCJFy7nouOtJZmVldHo7FQLIdeWTI55yyZc4Q==" crossorigin="anonymous"></script>
     <script src="./script.js" defer></script>
     <title>NASA Pictures</title>
 </head>
@@ -16,8 +17,7 @@
     <!-- Container -->
     <div class="container">
         <!-- Navigation -->
-        <div class="navigation-container">
-            <span class="background"></span>
+        <div class="navigation-container slideOutDown" data-navigation>
             <!-- Results nav -->
             <span class="navigation-items" data-results-nav>
                 <h3 class="clickable" data-clickable-favorites>Favorites</h3>
