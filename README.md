@@ -1,6 +1,6 @@
 ## Demo
 
-![print](demo/demo.png)
+![print](demo/demo.gif)
 
 ## Live page
 
