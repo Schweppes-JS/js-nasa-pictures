@@ -4,4 +4,4 @@
 
 ## Live page
 
-https://schweppes-js.github.io/rxjs-nasa-pictures/
+https://schweppes-js.github.io/js-nasa-pictures/
